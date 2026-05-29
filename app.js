@@ -102,11 +102,14 @@ const state = {
   packageId: null,
   currentIndex: 0,
   answers: [],
-  tasks: []
+  tasks: [],
+  stars: 0,
+  awardedThisRun: false
 };
 
 const app = document.querySelector("#app");
 const progressDots = document.querySelector("#progressDots");
+const starCount = document.querySelector("#starCount");
 
 document.querySelector("[data-action='home']").addEventListener("click", renderHome);
 
@@ -292,6 +295,7 @@ function resetPractice() {
   state.currentIndex = 0;
   state.answers = [];
   state.tasks = [];
+  state.awardedThisRun = false;
 }
 
 function startPractice() {
@@ -302,7 +306,12 @@ function startPractice() {
 
 function setScreen(html) {
   app.innerHTML = html;
+  updateStars();
   app.focus({ preventScroll: true });
+}
+
+function updateStars() {
+  starCount.textContent = String(state.stars);
 }
 
 function updateDots(total = 0, done = 0) {
@@ -418,6 +427,11 @@ function renderSummary() {
   const pack = currentPackage();
   const correctCount = state.answers.filter((answer) => answer.correct).length;
   const percent = Math.round((correctCount / state.tasks.length) * 100);
+  const earnedStar = percent === 100 && !state.awardedThisRun;
+  if (earnedStar) {
+    state.stars += 1;
+    state.awardedThisRun = true;
+  }
   updateDots(state.tasks.length, state.tasks.length);
 
   const message = percent >= 90
@@ -433,6 +447,12 @@ function renderSummary() {
         <p class="result-number">${percent}%</p>
         <h2>${message}</h2>
         <p>${correctCount} von ${state.tasks.length} Aufgaben waren richtig.</p>
+        ${percent === 100 ? `
+          <div class="reward-box">
+            <span class="reward-star" aria-hidden="true">★</span>
+            <p><strong>Stern verdient!</strong><br>Du hast jetzt ${state.stars} ${state.stars === 1 ? "Stern" : "Sterne"} in dieser Session.</p>
+          </div>
+        ` : ""}
         <div class="actions-row">
           <button class="primary-action" type="button" data-action="retry-package">Nochmal üben</button>
           <button class="ghost-action" type="button" data-action="back-packages">Anderes Paket</button>
