@@ -2,7 +2,9 @@
 <html lang="de">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#fffaf0">
+    <meta name="apple-mobile-web-app-title" content="Zahlenzauber">
     <title>Zahlenzauber</title>
     <meta name="description" content="Kindgerechte Deutsch- und Matheaufgaben für die Grundschule.">
     <link rel="stylesheet" href="styles.css">
@@ -18,7 +20,13 @@
           </span>
         </button>
 
-        <div class="progress-dots" id="progressDots" aria-label="Fortschritt"></div>
+        <div class="topbar-status">
+          <div class="star-counter" id="starCounter" aria-live="polite">
+            <span aria-hidden="true">★</span>
+            <strong id="starCount">0</strong>
+          </div>
+          <div class="progress-dots" id="progressDots" aria-label="Fortschritt"></div>
+        </div>
       </header>
 
       <main id="app" class="screen" tabindex="-1"></main>
