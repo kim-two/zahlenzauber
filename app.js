@@ -60,8 +60,12 @@ const packages = {
   },
   "3": {
     mathe: [
-      mathPackage("einmaleins", "Einmaleins", "Trainiere Malaufgaben.", "input", 10, () => makeMultiplication(2, 10, 2, 10)),
-      mathPackage("geteilt", "Geteilt", "Teile Zahlen gerecht auf.", "choice", 10, () => makeDivision(2, 10, 2, 10))
+      mathPackage("zahlenraum-1000-klasse-3", "Zahlen bis 1000", "Stellenwert, Nachbarzahlen und Zahlenvergleich.", "choice", 10, makeNumberSenseGrade3),
+      mathPackage("addieren-subtrahieren-klasse-3", "Addieren und Subtrahieren", "Rechne mit zwei- und dreistelligen Zahlen.", "input", 10, makeAddSubtractGrade3),
+      mathPackage("mal-geteilt-rest-klasse-3", "Mal und Geteilt", "Übe Einmaleins, Teilen und Restaufgaben.", "choice", 10, makeMultiplyDivideGrade3),
+      mathPackage("geld-zeit-klasse-3", "Geld und Zeit", "Rechne mit Euro, Cent und Zeitspannen.", "choice", 10, makeMoneyTimeGrade3),
+      mathPackage("masse-klasse-3", "Maßeinheiten", "Wandle Längen und Gewichte um.", "input", 10, makeUnitsGrade3),
+      mathPackage("geometrie-logik-klasse-3", "Geometrie und Logik", "Körper, Muster und Kombinationen.", "choice", 10, makeGeometryLogicGrade3)
     ],
     deutsch: [
       staticPackage("wortarten", "Wortarten", "Nomen, Verb oder Adjektiv?", "choice", [
@@ -79,8 +83,11 @@ const packages = {
   },
   "4": {
     mathe: [
-      mathPackage("textaufgaben", "Textaufgaben", "Lies genau und rechne.", "input", 10, makeStoryProblemGrade4),
-      mathPackage("zahlenraum-1000", "Zahlen bis 1000", "Addieren und subtrahieren mit größeren Zahlen.", "choice", 10, makeNumberRange1000)
+      mathPackage("zahlenraum-million-klasse-4", "Zahlen bis 1.000.000", "Lies, runde und vergleiche große Zahlen.", "choice", 10, makeNumberSenseGrade4),
+      mathPackage("schriftlich-rechnen-klasse-4", "Schriftlich rechnen", "Addition, Subtraktion, Multiplikation und Division.", "input", 10, makeWrittenArithmeticGrade4),
+      mathPackage("groessen-klasse-4", "Größen und Maße", "Rechne mit Längen, Gewichten, Zeiten und Geld.", "choice", 10, makeUnitsGrade4),
+      mathPackage("geometrie-klasse-4", "Geometrie", "Umfang, Flächeninhalt, Winkel und Körper.", "choice", 10, makeGeometryGrade4),
+      mathPackage("sachaufgaben-klasse-4", "Sachaufgaben", "Löse mehrschrittige Alltagsprobleme.", "input", 10, makeStoryProblemGrade4)
     ],
     deutsch: [
       staticPackage("faelle", "Fälle entdecken", "Frage nach Satzgliedern.", "choice", [
@@ -283,44 +290,305 @@ function makeStoryProblemGrade2() {
   return templates[randomInt(0, templates.length - 1)]();
 }
 
-function makeStoryProblemGrade4() {
+function formatNumber(value) {
+  return new Intl.NumberFormat("de-DE").format(value);
+}
+
+function makeNumberSenseGrade3() {
   const templates = [
     () => {
-      const each = randomInt(6, 14);
-      const days = randomInt(4, 9);
-      return task(`Noah liest jeden Tag ${each} Seiten. Wie viele Seiten liest er in ${days} Tagen?`, each * days);
+      const number = randomInt(120, 980);
+      const options = shuffle([number - 1, number + 1, number + 10, number - 10].filter((item) => item > 0));
+      return choice(`Welche Zahl ist der Nachfolger von ${number}?`, number + 1, options);
     },
     () => {
-      const seats = randomInt(45, 80);
-      const taken = randomInt(20, seats - 8);
-      return task(`Ein Bus hat ${seats} Plätze. ${taken} Kinder sitzen darin. Wie viele Plätze sind frei?`, seats - taken);
+      const hundreds = randomInt(2, 9);
+      const tens = randomInt(0, 9);
+      const ones = randomInt(0, 9);
+      return choice(`Welche Zahl hat ${hundreds} Hunderter, ${tens} Zehner und ${ones} Einer?`, hundreds * 100 + tens * 10 + ones, shuffle([
+        hundreds * 100 + tens * 10 + ones,
+        tens * 100 + hundreds * 10 + ones,
+        hundreds * 100 + ones * 10 + tens,
+        hundreds * 100 + tens + ones
+      ]));
     },
     () => {
-      const children = randomInt(4, 8);
-      const each = randomInt(5, 14);
-      return task(`${children} Kinder teilen ${children * each} Murmeln gerecht. Wie viele bekommt jedes Kind?`, each);
+      const a = randomInt(120, 980);
+      const b = randomInt(120, 980);
+      return choice(`Welche Zahl ist größer?`, Math.max(a, b), shuffle([a, b]));
+    },
+    () => {
+      const number = randomInt(101, 999);
+      const rounded = Math.round(number / 10) * 10;
+      return choice(`Runde ${number} auf den nächsten Zehner.`, rounded, shuffle([rounded, rounded - 10, rounded + 10, rounded + 20].filter((item) => item > 0)));
     }
   ];
 
   return templates[randomInt(0, templates.length - 1)]();
 }
 
-function makeNumberRange1000() {
+function makeAddSubtractGrade3() {
   if (Math.random() > 0.5) {
     const left = randomInt(120, 780);
-    const right = randomInt(20, 1000 - left);
+    const right = randomInt(35, 1000 - left);
     return task(`${left} + ${right} = ?`, left + right);
   }
 
   const answer = randomInt(80, 850);
-  const subtract = randomInt(20, 1000 - answer);
+  const subtract = randomInt(25, 1000 - answer);
   return task(`${answer + subtract} - ${subtract} = ?`, answer);
+}
+
+function makeMultiplyDivideGrade3() {
+  const templates = [
+    () => makeMultiplication(3, 10, 3, 10),
+    () => makeDivision(2, 12, 2, 10),
+    () => {
+      const divisor = randomInt(3, 9);
+      const answer = randomInt(3, 12);
+      const rest = randomInt(1, divisor - 1);
+      const number = answer * divisor + rest;
+      return choice(`${number} : ${divisor} = ?`, `${answer} Rest ${rest}`, shuffle([
+        `${answer} Rest ${rest}`,
+        `${answer + 1} Rest ${rest}`,
+        `${answer} Rest ${Math.max(0, rest - 1)}`,
+        `${answer - 1} Rest ${rest + 1}`
+      ]));
+    }
+  ];
+
+  const generated = templates[randomInt(0, templates.length - 1)]();
+  return generated.options ? generated : withOptions(generated);
+}
+
+function makeMoneyTimeGrade3() {
+  const templates = [
+    () => {
+      const euro = randomInt(2, 12);
+      const cent = [10, 20, 30, 40, 50, 60, 70, 80, 90][randomInt(0, 8)];
+      const total = euro * 100 + cent;
+      return choice(`${euro} Euro und ${cent} Cent sind wie viele Cent?`, `${total} Cent`, shuffle([
+        `${total} Cent`,
+        `${total - 10} Cent`,
+        `${total + 10} Cent`,
+        `${euro + cent} Cent`
+      ]));
+    },
+    () => {
+      const startHour = randomInt(7, 16);
+      const minutes = [15, 30, 45, 60, 75, 90][randomInt(0, 5)];
+      const endTotal = startHour * 60 + minutes;
+      const end = `${Math.floor(endTotal / 60)}:${String(endTotal % 60).padStart(2, "0")}`;
+      return choice(`Ein Training beginnt um ${startHour}:00 Uhr und dauert ${minutes} Minuten. Wann endet es?`, end, shuffle([
+        end,
+        `${startHour}:${String(minutes).padStart(2, "0")}`,
+        `${startHour + 1}:00`,
+        `${Math.floor((endTotal + 15) / 60)}:${String((endTotal + 15) % 60).padStart(2, "0")}`
+      ]));
+    }
+  ];
+
+  return templates[randomInt(0, templates.length - 1)]();
+}
+
+function makeUnitsGrade3() {
+  const templates = [
+    () => {
+      const meters = randomInt(2, 9);
+      const centimeters = randomInt(10, 90);
+      return task(`${meters} m ${centimeters} cm = ? cm`, meters * 100 + centimeters);
+    },
+    () => {
+      const kilograms = randomInt(1, 8);
+      const grams = randomInt(100, 900);
+      return task(`${kilograms} kg ${grams} g = ? g`, kilograms * 1000 + grams);
+    },
+    () => {
+      const centimeters = randomInt(3, 30);
+      return task(`${centimeters} cm = ? mm`, centimeters * 10);
+    }
+  ];
+
+  return templates[randomInt(0, templates.length - 1)]();
+}
+
+function makeGeometryLogicGrade3() {
+  const templates = [
+    () => choice("Welcher Körper hat 6 gleich große quadratische Flächen?", "Würfel", shuffle(["Würfel", "Quader", "Kugel", "Zylinder"])),
+    () => choice("Welcher Körper kann rollen und hat keine Ecken?", "Kugel", shuffle(["Würfel", "Kugel", "Quader", "Pyramide"])),
+    () => {
+      const shirts = randomInt(2, 4);
+      const pants = randomInt(2, 4);
+      return choice(`${shirts} T-Shirts und ${pants} Hosen: Wie viele verschiedene Outfits sind möglich?`, shirts * pants, shuffle([shirts * pants, shirts + pants, shirts * pants + 1, shirts * pants - 1]));
+    },
+    () => choice("Welche Figur hat genau 4 gleich lange Seiten?", "Quadrat", shuffle(["Rechteck", "Dreieck", "Quadrat", "Kreis"]))
+  ];
+
+  return templates[randomInt(0, templates.length - 1)]();
+}
+
+function makeStoryProblemGrade4() {
+  const templates = [
+    () => {
+      const classes = randomInt(3, 6);
+      const children = randomInt(18, 28);
+      const price = randomInt(4, 9);
+      return task(`${classes} Klassen mit je ${children} Kindern fahren ins Museum. Der Eintritt kostet ${price} Euro pro Kind. Wie viele Euro kostet der Eintritt zusammen?`, classes * children * price);
+    },
+    () => {
+      const boxes = randomInt(8, 16);
+      const perBox = randomInt(12, 24);
+      const sold = randomInt(35, 95);
+      return task(`Eine Bäckerei backt ${boxes} Kisten mit je ${perBox} Brötchen. ${sold} Brötchen werden verkauft. Wie viele bleiben übrig?`, boxes * perBox - sold);
+    },
+    () => {
+      const meters = randomInt(24, 60);
+      const price = randomInt(6, 14);
+      const discount = randomInt(20, 80);
+      return task(`Ein Verein kauft ${meters} m Stoff. Ein Meter kostet ${price} Euro. Es gibt ${discount} Euro Rabatt. Wie viel Euro muss der Verein bezahlen?`, meters * price - discount);
+    }
+  ];
+
+  return templates[randomInt(0, templates.length - 1)]();
+}
+
+function makeNumberSenseGrade4() {
+  const templates = [
+    () => {
+      const number = randomInt(100000, 999999);
+      const rounded = Math.round(number / 1000) * 1000;
+      return choice(`Runde ${formatNumber(number)} auf Tausender.`, formatNumber(rounded), shuffle([
+        formatNumber(rounded),
+        formatNumber(rounded + 1000),
+        formatNumber(Math.max(0, rounded - 1000)),
+        formatNumber(Math.round(number / 100) * 100)
+      ]));
+    },
+    () => {
+      const a = randomInt(100000, 999999);
+      const b = randomInt(100000, 999999);
+      return choice(`Welche Zahl ist kleiner?`, formatNumber(Math.min(a, b)), shuffle([formatNumber(a), formatNumber(b)]));
+    },
+    () => {
+      const number = randomInt(100000, 999999);
+      const hundredThousands = Math.floor(number / 100000);
+      return choice(`Wie viele Hunderttausender hat ${formatNumber(number)}?`, hundredThousands, shuffle([hundredThousands, hundredThousands + 1, Math.max(0, hundredThousands - 1), Math.floor(number / 10000)]));
+    }
+  ];
+
+  return templates[randomInt(0, templates.length - 1)]();
+}
+
+function makeWrittenArithmeticGrade4() {
+  const templates = [
+    () => {
+      const left = randomInt(12000, 85000);
+      const right = randomInt(4000, 99000);
+      return task(`${formatNumber(left)} + ${formatNumber(right)} = ?`, left + right);
+    },
+    () => {
+      const answer = randomInt(8000, 90000);
+      const subtract = randomInt(3000, 70000);
+      return task(`${formatNumber(answer + subtract)} - ${formatNumber(subtract)} = ?`, answer);
+    },
+    () => {
+      const left = randomInt(120, 980);
+      const right = randomInt(12, 49);
+      return task(`${left} x ${right} = ?`, left * right);
+    },
+    () => {
+      const divisor = randomInt(12, 25);
+      const answer = randomInt(20, 80);
+      return task(`${divisor * answer} : ${divisor} = ?`, answer);
+    }
+  ];
+
+  return templates[randomInt(0, templates.length - 1)]();
+}
+
+function makeUnitsGrade4() {
+  const templates = [
+    () => {
+      const kilometers = randomInt(2, 12);
+      const meters = randomInt(100, 900);
+      return choice(`${kilometers} km ${meters} m = ? m`, formatNumber(kilometers * 1000 + meters), shuffle([
+        formatNumber(kilometers * 1000 + meters),
+        formatNumber(kilometers * 100 + meters),
+        formatNumber(kilometers * 1000 - meters),
+        formatNumber(kilometers + meters)
+      ]));
+    },
+    () => {
+      const hours = randomInt(1, 5);
+      const minutes = randomInt(10, 50);
+      return choice(`${hours} h ${minutes} min = ? min`, hours * 60 + minutes, shuffle([hours * 60 + minutes, hours * 100 + minutes, hours * 60 - minutes, hours + minutes]));
+    },
+    () => {
+      const price = randomInt(125, 975);
+      const count = randomInt(3, 9);
+      const total = price * count;
+      return choice(`${count} Hefte kosten je ${(price / 100).toFixed(2).replace(".", ",")} Euro. Wie viel Cent sind das zusammen?`, `${total} Cent`, shuffle([
+        `${total} Cent`,
+        `${price + count} Cent`,
+        `${total - 100} Cent`,
+        `${total + 100} Cent`
+      ]));
+    },
+    () => {
+      const kilograms = randomInt(2, 12);
+      const grams = randomInt(100, 900);
+      return choice(`${kilograms} kg ${grams} g = ? g`, formatNumber(kilograms * 1000 + grams), shuffle([
+        formatNumber(kilograms * 1000 + grams),
+        formatNumber(kilograms * 100 + grams),
+        formatNumber(kilograms * 1000 - grams),
+        formatNumber(kilograms + grams)
+      ]));
+    }
+  ];
+
+  return templates[randomInt(0, templates.length - 1)]();
+}
+
+function makeGeometryGrade4() {
+  const templates = [
+    () => {
+      const length = randomInt(5, 18);
+      const width = randomInt(3, 12);
+      return choice(`Ein Rechteck ist ${length} cm lang und ${width} cm breit. Wie groß ist der Umfang?`, `${2 * (length + width)} cm`, shuffle([
+        `${2 * (length + width)} cm`,
+        `${length * width} cm`,
+        `${length + width} cm`,
+        `${2 * length + width} cm`
+      ]));
+    },
+    () => {
+      const length = randomInt(5, 18);
+      const width = randomInt(3, 12);
+      return choice(`Ein Rechteck ist ${length} cm lang und ${width} cm breit. Wie groß ist der Flächeninhalt?`, `${length * width} cm²`, shuffle([
+        `${length * width} cm²`,
+        `${2 * (length + width)} cm²`,
+        `${length + width} cm²`,
+        `${length * width + length} cm²`
+      ]));
+    },
+    () => choice("Welche Aussage passt zu parallelen Linien?", "Sie haben überall den gleichen Abstand.", shuffle([
+      "Sie haben überall den gleichen Abstand.",
+      "Sie schneiden sich immer im rechten Winkel.",
+      "Sie sind immer gleich lang.",
+      "Sie bilden immer einen Kreis."
+    ])),
+    () => choice("Welcher Körper hat 8 Ecken, 12 Kanten und 6 Flächen?", "Quader", shuffle(["Kugel", "Quader", "Zylinder", "Kegel"]))
+  ];
+
+  return templates[randomInt(0, templates.length - 1)]();
 }
 
 function normalizeAnswer(value) {
   return String(value)
     .trim()
     .toLowerCase()
+    .replaceAll(".", "")
+    .replaceAll(" ", "")
     .replaceAll("ä", "ae")
     .replaceAll("ö", "oe")
     .replaceAll("ü", "ue")
