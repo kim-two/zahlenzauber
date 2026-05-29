@@ -105,14 +105,30 @@ const state = {
   answers: [],
   tasks: [],
   stars: 0,
-  awardedThisRun: false
+  awardedThisRun: false,
+  garden: []
 };
+
+const gardenItems = [
+  { id: "sunflower", title: "Sonnenblume", icon: "☀", cost: 1, className: "sunflower", kind: "flower" },
+  { id: "tulip", title: "Tulpe", icon: "♥", cost: 1, className: "tulip", kind: "flower" },
+  { id: "berry", title: "Beerenbusch", icon: "●", cost: 2, className: "berry", kind: "bush" },
+  { id: "tree", title: "Apfelbaum", icon: "◆", cost: 3, className: "tree", kind: "tree" }
+];
+
+const growthStages = [
+  { id: "seed", title: "Samen", minAge: 0 },
+  { id: "sprout", title: "Spross", minAge: 10 },
+  { id: "bud", title: "Knospe", minAge: 25 },
+  { id: "grown", title: "Gewachsen", minAge: 45 }
+];
 
 const app = document.querySelector("#app");
 const progressDots = document.querySelector("#progressDots");
 const starCount = document.querySelector("#starCount");
 
 document.querySelector("[data-action='home']").addEventListener("click", renderHome);
+document.querySelector("[data-action='open-garden']").addEventListener("click", renderGarden);
 
 function task(question, answer) {
   return { question, answer: String(answer) };
@@ -497,6 +513,7 @@ function renderSummary() {
         <div class="actions-row">
           <button class="primary-action" type="button" data-action="retry-package">Nochmal üben</button>
           <button class="ghost-action" type="button" data-action="back-packages">Anderes Paket</button>
+          <button class="ghost-action" type="button" data-action="open-garden">Zum Sternen-Garten</button>
         </div>
       </div>
       <div class="result-panel">
@@ -516,6 +533,117 @@ function renderSummary() {
       </div>
     </section>
   `);
+}
+
+function renderGarden(message = "") {
+  updateDots();
+  scheduleGardenGrowth();
+  const plantedCount = state.garden.length;
+  const plots = Array.from({ length: 8 }, (_, index) => state.garden[index] || null);
+
+  setScreen(`
+    <section class="stage-header">
+      <div>
+        <div class="breadcrumb"><span class="pill">${state.stars} ${state.stars === 1 ? "Stern" : "Sterne"}</span></div>
+        <h1 class="section-title">Sternen-Garten</h1>
+        <p class="section-lead">Tausche Sterne gegen Pflanzen ein und fülle deinen Garten in dieser Session.</p>
+      </div>
+      <button class="ghost-action" type="button" data-action="home">Zur Startseite</button>
+    </section>
+
+    <section class="garden-layout">
+      <div class="garden-panel">
+        <div class="garden-sky" aria-hidden="true">
+          <span></span>
+        </div>
+        <div class="garden-beds" aria-label="Deine Gartenbeete">
+          ${plots.map((item, index) => renderGardenPlot(item, index)).join("")}
+        </div>
+      </div>
+
+      <aside class="garden-shop">
+        <h2>Pflanzen kaufen</h2>
+        <p>${plantedCount} von 8 Beeten sind bepflanzt.</p>
+        ${message ? `<div class="garden-message" role="status">${message}</div>` : ""}
+        <div class="garden-shop-list">
+          ${gardenItems.map(renderGardenShopItem).join("")}
+        </div>
+      </aside>
+    </section>
+  `);
+}
+
+function renderGardenPlot(item, index) {
+  if (!item) {
+    return `
+      <div class="garden-plot empty">
+        <span class="plot-number">${index + 1}</span>
+      </div>
+    `;
+  }
+
+  const stage = getGrowthStage(item);
+
+  return `
+    <div class="garden-plot planted ${item.className} growth-${stage.id}">
+      <span class="plant-stem" aria-hidden="true"></span>
+      <span class="plant-leaf leaf-left" aria-hidden="true"></span>
+      <span class="plant-leaf leaf-right" aria-hidden="true"></span>
+      <span class="plant-icon" aria-hidden="true">${item.icon}</span>
+      <strong>${item.title}<small>${stage.title}</small></strong>
+    </div>
+  `;
+}
+
+function renderGardenShopItem(item) {
+  const canBuy = state.stars >= item.cost && state.garden.length < 8;
+  return `
+    <button class="garden-shop-item" type="button" data-action="buy-garden-item" data-value="${item.id}" ${canBuy ? "" : "disabled"}>
+      <span class="shop-plant ${item.className}" aria-hidden="true">${item.icon}</span>
+      <span>
+        <strong>${item.title}</strong>
+        <small>${item.cost} ${item.cost === 1 ? "Stern" : "Sterne"}</small>
+      </span>
+    </button>
+  `;
+}
+
+function buyGardenItem(itemId) {
+  const item = gardenItems.find((gardenItem) => gardenItem.id === itemId);
+  if (!item) return;
+
+  if (state.garden.length >= 8) {
+    renderGarden("Dein Garten ist schon voll.");
+    return;
+  }
+
+  if (state.stars < item.cost) {
+    renderGarden("Dafür brauchst du noch mehr Sterne.");
+    return;
+  }
+
+  state.stars -= item.cost;
+  state.garden.push({ ...item, plantedAt: Date.now() });
+  updateStars();
+  renderGarden(`${item.title} wurde gepflanzt.`);
+}
+
+function getGrowthStage(item) {
+  const ageSeconds = Math.floor((Date.now() - item.plantedAt) / 1000);
+  return growthStages.reduce((currentStage, stage) => {
+    return ageSeconds >= stage.minAge ? stage : currentStage;
+  }, growthStages[0]);
+}
+
+function scheduleGardenGrowth() {
+  window.clearTimeout(state.gardenTimer);
+  if (!state.garden.length) return;
+
+  state.gardenTimer = window.setTimeout(() => {
+    if (app.querySelector(".garden-layout")) {
+      renderGarden();
+    }
+  }, 5000);
 }
 
 function stageHeader(title, lead, showBack) {
@@ -636,6 +764,18 @@ app.addEventListener("click", (event) => {
     state.packageId = null;
     resetPractice();
     renderPackageSelection();
+  }
+
+  if (action === "open-garden") {
+    renderGarden();
+  }
+
+  if (action === "home") {
+    renderHome();
+  }
+
+  if (action === "buy-garden-item") {
+    buyGardenItem(value);
   }
 });
 
