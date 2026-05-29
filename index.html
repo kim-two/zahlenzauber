@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Zahlenzauber</title>
+    <meta name="description" content="Kindgerechte Deutsch- und Matheaufgaben fuer die Grundschule.">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <button class="brand" type="button" data-action="home" aria-label="Zur Startseite">
+          <span class="brand-mark" aria-hidden="true">Zz</span>
+          <span>
+            <strong>Zahlenzauber</strong>
+            <small>Ueben fuer die Grundschule</small>
+          </span>
+        </button>
+
+        <div class="progress-dots" id="progressDots" aria-label="Fortschritt"></div>
+      </header>
+
+      <main id="app" class="screen" tabindex="-1"></main>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
