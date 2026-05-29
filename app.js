@@ -140,7 +140,7 @@ function createTasks(pack) {
   while (tasks.length < pack.taskCount && tries < pack.taskCount * 20) {
     tries += 1;
     const nextTask = pack.generator();
-    const key = nextTask.question;
+    const key = `${nextTask.question}|${nextTask.answer}`;
     if (seen.has(key)) continue;
     seen.add(key);
     tasks.push(pack.mode === "choice" && !nextTask.options ? withOptions(nextTask) : nextTask);
