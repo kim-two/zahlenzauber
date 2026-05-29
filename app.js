@@ -1,5 +1,5 @@
 const grades = [
-  { id: "1", title: "1. Klasse", hint: "Zahlen bis 20, erste Woerter" },
+  { id: "1", title: "1. Klasse", hint: "Zahlen bis 20, erste Wörter" },
   { id: "2", title: "2. Klasse", hint: "Zahlen bis 100, Lesen und Schreiben" },
   { id: "3", title: "3. Klasse", hint: "Malnehmen, Teilen und Texte" },
   { id: "4", title: "4. Klasse", hint: "Knobeln, Sachaufgaben und Grammatik" }
@@ -7,249 +7,91 @@ const grades = [
 
 const subjects = [
   { id: "mathe", title: "Mathe", hint: "Rechnen, knobeln, Zahlen entdecken" },
-  { id: "deutsch", title: "Deutsch", hint: "Lesen, Woerter, Saetze und Sprache" }
+  { id: "deutsch", title: "Deutsch", hint: "Lesen, Wörter, Sätze und Sprache" }
 ];
 
 const packages = {
   "1": {
     mathe: [
-      {
-        id: "plus-bis-20",
-        title: "Plus bis 20",
-        description: "Addiere kleine Zahlen.",
-        mode: "input",
-        tasks: [
-          task("3 + 4 = ?", "7"),
-          task("8 + 2 = ?", "10"),
-          task("6 + 5 = ?", "11"),
-          task("9 + 1 = ?", "10"),
-          task("7 + 6 = ?", "13"),
-          task("5 + 5 = ?", "10"),
-          task("12 + 3 = ?", "15"),
-          task("4 + 9 = ?", "13"),
-          task("11 + 2 = ?", "13"),
-          task("10 + 7 = ?", "17")
-        ]
-      },
-      {
-        id: "minus-bis-20",
-        title: "Minus bis 20",
-        description: "Ziehe Zahlen ab.",
-        mode: "choice",
-        tasks: [
-          choice("9 - 4 = ?", "5", ["4", "5", "6", "7"]),
-          choice("12 - 2 = ?", "10", ["8", "9", "10", "11"]),
-          choice("15 - 5 = ?", "10", ["9", "10", "11", "12"]),
-          choice("8 - 3 = ?", "5", ["3", "4", "5", "6"]),
-          choice("18 - 7 = ?", "11", ["9", "10", "11", "12"]),
-          choice("14 - 6 = ?", "8", ["6", "7", "8", "9"]),
-          choice("20 - 9 = ?", "11", ["10", "11", "12", "13"]),
-          choice("7 - 1 = ?", "6", ["5", "6", "7", "8"]),
-          choice("16 - 4 = ?", "12", ["11", "12", "13", "14"]),
-          choice("13 - 8 = ?", "5", ["4", "5", "6", "7"])
-        ]
-      }
+      mathPackage("plus-bis-20", "Plus bis 20", "Addiere kleine Zahlen.", "input", 10, () => makeAddition(1, 12, 20)),
+      mathPackage("minus-bis-20", "Minus bis 20", "Ziehe Zahlen ab.", "choice", 10, () => makeSubtraction(2, 20))
     ],
     deutsch: [
-      {
-        id: "reimwoerter",
-        title: "Reimwoerter",
-        description: "Finde das Wort, das sich reimt.",
-        mode: "choice",
-        tasks: [
-          choice("Was reimt sich auf Haus?", "Maus", ["Baum", "Maus", "Tisch", "Lampe"]),
-          choice("Was reimt sich auf Ball?", "Fall", ["Fall", "Buch", "Sonne", "Kind"]),
-          choice("Was reimt sich auf Hase?", "Nase", ["Nase", "Wiese", "Hund", "Rot"]),
-          choice("Was reimt sich auf See?", "Schnee", ["Schnee", "Stift", "Tor", "Mann"]),
-          choice("Was reimt sich auf Licht?", "Gesicht", ["Gesicht", "Auto", "Blume", "Wald"])
-        ]
-      },
-      {
-        id: "anfangslaute",
-        title: "Anfangslaute",
-        description: "Hoere und erkenne den ersten Buchstaben.",
-        mode: "choice",
-        tasks: [
-          choice("Mit welchem Buchstaben beginnt Apfel?", "A", ["A", "M", "S", "T"]),
-          choice("Mit welchem Buchstaben beginnt Ball?", "B", ["D", "B", "L", "R"]),
-          choice("Mit welchem Buchstaben beginnt Sonne?", "S", ["F", "M", "S", "N"]),
-          choice("Mit welchem Buchstaben beginnt Maus?", "M", ["A", "M", "P", "U"]),
-          choice("Mit welchem Buchstaben beginnt Tisch?", "T", ["K", "I", "T", "W"])
-        ]
-      }
+      staticPackage("reimwoerter", "Reimwörter", "Finde das Wort, das sich reimt.", "choice", [
+        choice("Was reimt sich auf Haus?", "Maus", ["Baum", "Maus", "Tisch", "Lampe"]),
+        choice("Was reimt sich auf Ball?", "Fall", ["Fall", "Buch", "Sonne", "Kind"]),
+        choice("Was reimt sich auf Hase?", "Nase", ["Nase", "Wiese", "Hund", "Rot"]),
+        choice("Was reimt sich auf See?", "Schnee", ["Schnee", "Stift", "Tor", "Mann"]),
+        choice("Was reimt sich auf Licht?", "Gesicht", ["Gesicht", "Auto", "Blume", "Wald"])
+      ]),
+      staticPackage("anfangslaute", "Anfangslaute", "Höre und erkenne den ersten Buchstaben.", "choice", [
+        choice("Mit welchem Buchstaben beginnt Apfel?", "A", ["A", "M", "S", "T"]),
+        choice("Mit welchem Buchstaben beginnt Ball?", "B", ["D", "B", "L", "R"]),
+        choice("Mit welchem Buchstaben beginnt Sonne?", "S", ["F", "M", "S", "N"]),
+        choice("Mit welchem Buchstaben beginnt Maus?", "M", ["A", "M", "P", "U"]),
+        choice("Mit welchem Buchstaben beginnt Tisch?", "T", ["K", "I", "T", "W"])
+      ])
     ]
   },
   "2": {
     mathe: [
-      {
-        id: "plus-bis-100",
-        title: "Plus bis 100",
-        description: "Rechne mit Zehnern und Einern.",
-        mode: "input",
-        tasks: [
-          task("34 + 20 = ?", "54"),
-          task("47 + 8 = ?", "55"),
-          task("61 + 9 = ?", "70"),
-          task("25 + 16 = ?", "41"),
-          task("58 + 7 = ?", "65"),
-          task("40 + 35 = ?", "75"),
-          task("29 + 11 = ?", "40"),
-          task("73 + 6 = ?", "79"),
-          task("18 + 27 = ?", "45"),
-          task("52 + 19 = ?", "71")
-        ]
-      },
-      {
-        id: "uhrzeiten",
-        title: "Uhrzeiten",
-        description: "Lies einfache Zeiten.",
-        mode: "choice",
-        tasks: [
-          choice("Welche Uhrzeit ist 30 Minuten nach 8:00?", "8:30", ["8:15", "8:30", "9:00", "9:30"]),
-          choice("Welche Uhrzeit ist eine Stunde nach 6:00?", "7:00", ["5:00", "6:30", "7:00", "8:00"]),
-          choice("Welche Uhrzeit ist 15 Minuten nach 10:00?", "10:15", ["10:15", "10:30", "11:00", "9:45"]),
-          choice("Welche Uhrzeit ist 30 Minuten vor 12:00?", "11:30", ["11:00", "11:30", "12:30", "10:30"])
-        ]
-      }
+      mathPackage("plus-bis-100", "Plus", "Addiere Zahlen bis 100.", "input", 10, () => makeAddition(8, 75, 100)),
+      mathPackage("minus-bis-100", "Minus", "Subtrahiere Zahlen bis 100.", "choice", 10, () => makeSubtraction(10, 100)),
+      mathPackage("mal-klein", "Mal", "Übe einfache Malaufgaben.", "input", 10, () => makeMultiplication(2, 10, 2, 5)),
+      mathPackage("geteilt-klein", "Geteilt", "Teile Zahlen ohne Rest.", "choice", 10, () => makeDivision(2, 10, 2, 5)),
+      mathPackage("textaufgaben-klasse-2", "Textaufgaben", "Lies genau und rechne.", "input", 10, makeStoryProblemGrade2),
+      mathPackage("uhrzeiten", "Uhrzeiten", "Lies einfache Zeiten.", "choice", 8, makeClockTask)
     ],
     deutsch: [
-      {
-        id: "nomen-erkennen",
-        title: "Nomen erkennen",
-        description: "Welche Woerter sind Namenwoerter?",
-        mode: "choice",
-        tasks: [
-          choice("Welches Wort ist ein Nomen?", "Hund", ["laufen", "Hund", "schnell", "blau"]),
-          choice("Welches Wort ist ein Nomen?", "Schule", ["klein", "Schule", "springen", "warm"]),
-          choice("Welches Wort ist ein Nomen?", "Blume", ["Blume", "rot", "singen", "leise"]),
-          choice("Welches Wort ist ein Nomen?", "Kind", ["malen", "gut", "Kind", "rund"])
-        ]
-      },
-      {
-        id: "satzzeichen",
-        title: "Satzzeichen",
-        description: "Punkt, Fragezeichen oder Ausrufezeichen?",
-        mode: "choice",
-        tasks: [
-          choice("Wie heisst du", "?", [".", "?", "!"]),
-          choice("Ich lese ein Buch", ".", [".", "?", "!"]),
-          choice("Pass auf", "!", [".", "?", "!"]),
-          choice("Wo ist mein Stift", "?", [".", "?", "!"])
-        ]
-      }
+      staticPackage("nomen-erkennen", "Nomen erkennen", "Welche Wörter sind Namenwörter?", "choice", [
+        choice("Welches Wort ist ein Nomen?", "Hund", ["laufen", "Hund", "schnell", "blau"]),
+        choice("Welches Wort ist ein Nomen?", "Schule", ["klein", "Schule", "springen", "warm"]),
+        choice("Welches Wort ist ein Nomen?", "Blume", ["Blume", "rot", "singen", "leise"]),
+        choice("Welches Wort ist ein Nomen?", "Kind", ["malen", "gut", "Kind", "rund"])
+      ]),
+      staticPackage("satzzeichen", "Satzzeichen", "Punkt, Fragezeichen oder Ausrufezeichen?", "choice", [
+        choice("Wie heißt du", "?", [".", "?", "!"]),
+        choice("Ich lese ein Buch", ".", [".", "?", "!"]),
+        choice("Pass auf", "!", [".", "?", "!"]),
+        choice("Wo ist mein Stift", "?", [".", "?", "!"])
+      ])
     ]
   },
   "3": {
     mathe: [
-      {
-        id: "einmaleins",
-        title: "Einmaleins",
-        description: "Trainiere Malaufgaben.",
-        mode: "input",
-        tasks: [
-          task("3 x 4 = ?", "12"),
-          task("6 x 7 = ?", "42"),
-          task("8 x 5 = ?", "40"),
-          task("9 x 3 = ?", "27"),
-          task("4 x 4 = ?", "16"),
-          task("7 x 8 = ?", "56"),
-          task("6 x 6 = ?", "36"),
-          task("9 x 9 = ?", "81"),
-          task("2 x 8 = ?", "16"),
-          task("5 x 7 = ?", "35")
-        ]
-      },
-      {
-        id: "geteilt",
-        title: "Geteilt",
-        description: "Teile Zahlen gerecht auf.",
-        mode: "choice",
-        tasks: [
-          choice("24 : 6 = ?", "4", ["3", "4", "5", "6"]),
-          choice("36 : 4 = ?", "9", ["6", "8", "9", "12"]),
-          choice("45 : 5 = ?", "9", ["7", "8", "9", "10"]),
-          choice("56 : 7 = ?", "8", ["6", "7", "8", "9"]),
-          choice("81 : 9 = ?", "9", ["7", "8", "9", "10"])
-        ]
-      }
+      mathPackage("einmaleins", "Einmaleins", "Trainiere Malaufgaben.", "input", 10, () => makeMultiplication(2, 10, 2, 10)),
+      mathPackage("geteilt", "Geteilt", "Teile Zahlen gerecht auf.", "choice", 10, () => makeDivision(2, 10, 2, 10))
     ],
     deutsch: [
-      {
-        id: "wortarten",
-        title: "Wortarten",
-        description: "Nomen, Verb oder Adjektiv?",
-        mode: "choice",
-        tasks: [
-          choice("Welche Wortart ist schwimmen?", "Verb", ["Nomen", "Verb", "Adjektiv"]),
-          choice("Welche Wortart ist freundlich?", "Adjektiv", ["Nomen", "Verb", "Adjektiv"]),
-          choice("Welche Wortart ist Fahrrad?", "Nomen", ["Nomen", "Verb", "Adjektiv"]),
-          choice("Welche Wortart ist lachen?", "Verb", ["Nomen", "Verb", "Adjektiv"])
-        ]
-      },
-      {
-        id: "lesecheck",
-        title: "Lesecheck",
-        description: "Verstehe kurze Saetze.",
-        mode: "choice",
-        tasks: [
-          choice("Mila stellt den Becher auf den Tisch. Wo ist der Becher?", "Auf dem Tisch", ["Unter dem Tisch", "Auf dem Tisch", "Im Ranzen"]),
-          choice("Tom zieht die rote Jacke an. Welche Farbe hat die Jacke?", "Rot", ["Blau", "Gruen", "Rot"]),
-          choice("Im Garten wachsen drei Tulpen. Wie viele Tulpen wachsen dort?", "Drei", ["Zwei", "Drei", "Vier"])
-        ]
-      }
+      staticPackage("wortarten", "Wortarten", "Nomen, Verb oder Adjektiv?", "choice", [
+        choice("Welche Wortart ist schwimmen?", "Verb", ["Nomen", "Verb", "Adjektiv"]),
+        choice("Welche Wortart ist freundlich?", "Adjektiv", ["Nomen", "Verb", "Adjektiv"]),
+        choice("Welche Wortart ist Fahrrad?", "Nomen", ["Nomen", "Verb", "Adjektiv"]),
+        choice("Welche Wortart ist lachen?", "Verb", ["Nomen", "Verb", "Adjektiv"])
+      ]),
+      staticPackage("lesecheck", "Lesecheck", "Verstehe kurze Sätze.", "choice", [
+        choice("Mila stellt den Becher auf den Tisch. Wo ist der Becher?", "Auf dem Tisch", ["Unter dem Tisch", "Auf dem Tisch", "Im Ranzen"]),
+        choice("Tom zieht die rote Jacke an. Welche Farbe hat die Jacke?", "Rot", ["Blau", "Grün", "Rot"]),
+        choice("Im Garten wachsen drei Tulpen. Wie viele Tulpen wachsen dort?", "Drei", ["Zwei", "Drei", "Vier"])
+      ])
     ]
   },
   "4": {
     mathe: [
-      {
-        id: "textaufgaben",
-        title: "Textaufgaben",
-        description: "Lies genau und rechne.",
-        mode: "input",
-        tasks: [
-          task("Lina hat 24 Sticker. Sie bekommt 18 dazu. Wie viele Sticker hat sie?", "42"),
-          task("Ein Bus hat 48 Plaetze. 35 Kinder sitzen darin. Wie viele Plaetze sind frei?", "13"),
-          task("4 Kinder teilen 32 Murmeln gerecht. Wie viele bekommt jedes Kind?", "8"),
-          task("Ein Heft kostet 3 Euro. Was kosten 7 Hefte?", "21"),
-          task("Noah liest jeden Tag 9 Seiten. Wie viele Seiten liest er in 6 Tagen?", "54")
-        ]
-      },
-      {
-        id: "zahlenraum-1000",
-        title: "Zahlen bis 1000",
-        description: "Addieren und subtrahieren mit groesseren Zahlen.",
-        mode: "choice",
-        tasks: [
-          choice("430 + 250 = ?", "680", ["580", "670", "680", "780"]),
-          choice("900 - 120 = ?", "780", ["720", "780", "820", "880"]),
-          choice("365 + 110 = ?", "475", ["465", "475", "485", "575"]),
-          choice("700 - 455 = ?", "245", ["235", "245", "255", "345"])
-        ]
-      }
+      mathPackage("textaufgaben", "Textaufgaben", "Lies genau und rechne.", "input", 10, makeStoryProblemGrade4),
+      mathPackage("zahlenraum-1000", "Zahlen bis 1000", "Addieren und subtrahieren mit größeren Zahlen.", "choice", 10, makeNumberRange1000)
     ],
     deutsch: [
-      {
-        id: "faelle",
-        title: "Faelle entdecken",
-        description: "Frage nach Satzgliedern.",
-        mode: "choice",
-        tasks: [
-          choice("Der Hund jagt den Ball. Wen oder was jagt der Hund?", "den Ball", ["der Hund", "den Ball", "jagt"]),
-          choice("Mia gibt dem Freund ein Buch. Wem gibt Mia ein Buch?", "dem Freund", ["Mia", "dem Freund", "ein Buch"]),
-          choice("Das Fahrrad gehoert dem Kind. Wem gehoert das Fahrrad?", "dem Kind", ["Das Fahrrad", "dem Kind", "gehoert"])
-        ]
-      },
-      {
-        id: "rechtschreibung",
-        title: "Rechtschreibung",
-        description: "Waehle die richtige Schreibweise.",
-        mode: "choice",
-        tasks: [
-          choice("Welche Schreibweise ist richtig?", "Fahrrad", ["Fahrad", "Fahrrad", "Farad"]),
-          choice("Welche Schreibweise ist richtig?", "Schluessel", ["Schluessel", "Schlusel", "Schluesselr"]),
-          choice("Welche Schreibweise ist richtig?", "naemlich", ["nemlich", "naemlich", "naemlig"])
-        ]
-      }
+      staticPackage("faelle", "Fälle entdecken", "Frage nach Satzgliedern.", "choice", [
+        choice("Der Hund jagt den Ball. Wen oder was jagt der Hund?", "den Ball", ["der Hund", "den Ball", "jagt"]),
+        choice("Mia gibt dem Freund ein Buch. Wem gibt Mia ein Buch?", "dem Freund", ["Mia", "dem Freund", "ein Buch"]),
+        choice("Das Fahrrad gehört dem Kind. Wem gehört das Fahrrad?", "dem Kind", ["Das Fahrrad", "dem Kind", "gehört"])
+      ]),
+      staticPackage("rechtschreibung", "Rechtschreibung", "Wähle die richtige Schreibweise.", "choice", [
+        choice("Welche Schreibweise ist richtig?", "Fahrrad", ["Fahrad", "Fahrrad", "Farad"]),
+        choice("Welche Schreibweise ist richtig?", "Schlüssel", ["Schlüssel", "Schlusel", "Schlüsselr"]),
+        choice("Welche Schreibweise ist richtig?", "nämlich", ["nemlich", "nämlich", "nämlig"])
+      ])
     ]
   }
 };
@@ -259,7 +101,8 @@ const state = {
   subject: null,
   packageId: null,
   currentIndex: 0,
-  answers: []
+  answers: [],
+  tasks: []
 };
 
 const app = document.querySelector("#app");
@@ -268,15 +111,177 @@ const progressDots = document.querySelector("#progressDots");
 document.querySelector("[data-action='home']").addEventListener("click", renderHome);
 
 function task(question, answer) {
-  return { question, answer };
+  return { question, answer: String(answer) };
 }
 
 function choice(question, answer, options) {
-  return { question, answer, options };
+  return { question, answer: String(answer), options: options.map(String) };
+}
+
+function staticPackage(id, title, description, mode, tasks) {
+  return { id, title, description, mode, taskCount: tasks.length, tasks };
+}
+
+function mathPackage(id, title, description, mode, taskCount, generator) {
+  return { id, title, description, mode, taskCount, generator };
+}
+
+function createTasks(pack) {
+  if (!pack.generator) return pack.tasks;
+
+  const seen = new Set();
+  const tasks = [];
+  let tries = 0;
+
+  while (tasks.length < pack.taskCount && tries < pack.taskCount * 20) {
+    tries += 1;
+    const nextTask = pack.generator();
+    const key = nextTask.question;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    tasks.push(pack.mode === "choice" && !nextTask.options ? withOptions(nextTask) : nextTask);
+  }
+
+  return tasks;
+}
+
+function randomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function shuffle(items) {
+  const copy = [...items];
+  for (let index = copy.length - 1; index > 0; index -= 1) {
+    const swapIndex = randomInt(0, index);
+    [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]];
+  }
+  return copy;
+}
+
+function withOptions(baseTask) {
+  const correct = Number(baseTask.answer);
+  const options = new Set([String(correct)]);
+  const spread = Math.max(4, Math.ceil(Math.abs(correct) / 5));
+
+  while (options.size < 4) {
+    const offset = randomInt(-spread, spread);
+    const candidate = Math.max(0, correct + offset);
+    options.add(String(candidate));
+  }
+
+  return choice(baseTask.question, baseTask.answer, shuffle([...options]));
+}
+
+function makeAddition(min, maxPart, maxResult) {
+  const left = randomInt(min, maxPart);
+  const right = randomInt(min, Math.max(min, maxResult - left));
+  return task(`${left} + ${right} = ?`, left + right);
+}
+
+function makeSubtraction(minResult, maxStart) {
+  const answer = randomInt(minResult, Math.max(minResult, maxStart - 5));
+  const subtract = randomInt(1, maxStart - answer);
+  const start = answer + subtract;
+  return task(`${start} - ${subtract} = ?`, answer);
+}
+
+function makeMultiplication(minLeft, maxLeft, minRight, maxRight) {
+  const left = randomInt(minLeft, maxLeft);
+  const right = randomInt(minRight, maxRight);
+  return task(`${left} x ${right} = ?`, left * right);
+}
+
+function makeDivision(minAnswer, maxAnswer, minDivisor, maxDivisor) {
+  const answer = randomInt(minAnswer, maxAnswer);
+  const divisor = randomInt(minDivisor, maxDivisor);
+  return task(`${answer * divisor} : ${divisor} = ?`, answer);
+}
+
+function makeClockTask() {
+  const hour = randomInt(6, 18);
+  const minutes = [0, 15, 30, 45][randomInt(0, 3)];
+  const addMinutes = [15, 30, 60][randomInt(0, 2)];
+  const total = hour * 60 + minutes + addMinutes;
+  const answerHour = Math.floor(total / 60);
+  const answerMinutes = total % 60;
+  const answer = `${answerHour}:${String(answerMinutes).padStart(2, "0")}`;
+  const question = `Welche Uhrzeit ist ${addMinutes} Minuten nach ${hour}:${String(minutes).padStart(2, "0")}?`;
+  const options = new Set([answer]);
+
+  while (options.size < 4) {
+    const offset = [15, 30, 45, 60][randomInt(0, 3)] * (Math.random() > 0.5 ? 1 : -1);
+    const candidateTotal = Math.max(0, total + offset);
+    const candidate = `${Math.floor(candidateTotal / 60)}:${String(candidateTotal % 60).padStart(2, "0")}`;
+    options.add(candidate);
+  }
+
+  return choice(question, answer, shuffle([...options]));
+}
+
+function makeStoryProblemGrade2() {
+  const templates = [
+    () => {
+      const start = randomInt(12, 48);
+      const added = randomInt(5, 35);
+      return task(`Mila hat ${start} Sticker. Sie bekommt ${added} dazu. Wie viele Sticker hat sie jetzt?`, start + added);
+    },
+    () => {
+      const total = randomInt(30, 90);
+      const used = randomInt(5, total - 10);
+      return task(`In einer Kiste liegen ${total} Bälle. ${used} Bälle werden herausgenommen. Wie viele bleiben übrig?`, total - used);
+    },
+    () => {
+      const children = randomInt(2, 5);
+      const each = randomInt(2, 10);
+      return task(`${children} Kinder bekommen je ${each} Bonbons. Wie viele Bonbons sind das zusammen?`, children * each);
+    }
+  ];
+
+  return templates[randomInt(0, templates.length - 1)]();
+}
+
+function makeStoryProblemGrade4() {
+  const templates = [
+    () => {
+      const each = randomInt(6, 14);
+      const days = randomInt(4, 9);
+      return task(`Noah liest jeden Tag ${each} Seiten. Wie viele Seiten liest er in ${days} Tagen?`, each * days);
+    },
+    () => {
+      const seats = randomInt(45, 80);
+      const taken = randomInt(20, seats - 8);
+      return task(`Ein Bus hat ${seats} Plätze. ${taken} Kinder sitzen darin. Wie viele Plätze sind frei?`, seats - taken);
+    },
+    () => {
+      const children = randomInt(4, 8);
+      const each = randomInt(5, 14);
+      return task(`${children} Kinder teilen ${children * each} Murmeln gerecht. Wie viele bekommt jedes Kind?`, each);
+    }
+  ];
+
+  return templates[randomInt(0, templates.length - 1)]();
+}
+
+function makeNumberRange1000() {
+  if (Math.random() > 0.5) {
+    const left = randomInt(120, 780);
+    const right = randomInt(20, 1000 - left);
+    return task(`${left} + ${right} = ?`, left + right);
+  }
+
+  const answer = randomInt(80, 850);
+  const subtract = randomInt(20, 1000 - answer);
+  return task(`${answer + subtract} - ${subtract} = ?`, answer);
 }
 
 function normalizeAnswer(value) {
-  return String(value).trim().toLowerCase().replaceAll("ä", "ae").replaceAll("ö", "oe").replaceAll("ü", "ue").replaceAll("ß", "ss");
+  return String(value)
+    .trim()
+    .toLowerCase()
+    .replaceAll("ä", "ae")
+    .replaceAll("ö", "oe")
+    .replaceAll("ü", "ue")
+    .replaceAll("ß", "ss");
 }
 
 function currentPackage() {
@@ -286,6 +291,13 @@ function currentPackage() {
 function resetPractice() {
   state.currentIndex = 0;
   state.answers = [];
+  state.tasks = [];
+}
+
+function startPractice() {
+  resetPractice();
+  state.tasks = createTasks(currentPackage());
+  renderPractice();
 }
 
 function setScreen(html) {
@@ -315,10 +327,10 @@ function renderHome() {
   setScreen(`
     <section class="hero" aria-labelledby="home-title">
       <div class="hero-copy">
-        <h1 id="home-title">Lernen darf sich leicht anfuehlen.</h1>
-        <p>Waehle deine Klasse und starte ein kleines Aufgabenpaket. Jede Runde ist kurz, freundlich und sofort spielbar.</p>
-        <div class="choice-grid" aria-label="Klassenstufe auswaehlen">
-          ${grades.map((grade) => cardButton(grade.title, grade.hint, `select-grade`, grade.id, "choice-card")).join("")}
+        <h1 id="home-title">Lernen darf sich leicht anfühlen.</h1>
+        <p>Wähle deine Klasse und starte ein kleines Aufgabenpaket. Jede Runde ist kurz, freundlich und sofort spielbar.</p>
+        <div class="choice-grid" aria-label="Klassenstufe auswählen">
+          ${grades.map((grade) => cardButton(grade.title, grade.hint, "select-grade", grade.id, "choice-card")).join("")}
         </div>
       </div>
       <div class="hero-art" aria-hidden="true">
@@ -337,7 +349,7 @@ function renderHome() {
 function renderSubjectSelection() {
   updateDots();
   setScreen(`
-    ${stageHeader("Fach auswaehlen", "Was moechtest du heute ueben?", true)}
+    ${stageHeader("Fach auswählen", "Was möchtest du heute üben?", true)}
     <div class="choice-grid">
       ${subjects.map((subject) => cardButton(subject.title, subject.hint, "select-subject", subject.id, "choice-card")).join("")}
     </div>
@@ -348,17 +360,17 @@ function renderPackageSelection() {
   const items = packages[state.grade][state.subject];
   updateDots();
   setScreen(`
-    ${stageHeader("Aufgabenpaket waehlen", "Such dir eine Runde aus. Die meisten Pakete haben etwa 10 Aufgaben.", true)}
+    ${stageHeader("Aufgabenpaket wählen", "Such dir eine Runde aus. Die meisten Pakete haben etwa 10 Aufgaben.", true)}
     <div class="package-grid">
-      ${items.map((item) => cardButton(item.title, `${item.description} ${item.tasks.length} Aufgaben.`, "select-package", item.id, "package-card")).join("")}
+      ${items.map((item) => cardButton(item.title, `${item.description} ${item.taskCount} Aufgaben.`, "select-package", item.id, "package-card")).join("")}
     </div>
   `);
 }
 
 function renderPractice() {
   const pack = currentPackage();
-  const currentTask = pack.tasks[state.currentIndex];
-  updateDots(pack.tasks.length, state.answers.length);
+  const currentTask = state.tasks[state.currentIndex];
+  updateDots(state.tasks.length, state.answers.length);
 
   const answerArea = currentTask.options
     ? `<div class="answer-grid">
@@ -370,14 +382,14 @@ function renderPractice() {
       </div>`
     : `<form class="input-row" data-answer-form>
         <input class="answer-input" name="answer" autocomplete="off" inputmode="text" aria-label="Deine Antwort" placeholder="Deine Antwort">
-        <button class="primary-action" type="submit">Pruefen</button>
+        <button class="primary-action" type="submit">Prüfen</button>
       </form>`;
 
   setScreen(`
     ${stageHeader(pack.title, "Lies die Aufgabe und antworte in Ruhe.", true)}
     <section class="practice-layout">
       <div class="task-panel">
-        <p class="question-count">Aufgabe ${state.currentIndex + 1} von ${pack.tasks.length}</p>
+        <p class="question-count">Aufgabe ${state.currentIndex + 1} von ${state.tasks.length}</p>
         <h2 class="question-text">${escapeHtml(currentTask.question)}</h2>
         ${answerArea}
         <div class="feedback" aria-live="polite"></div>
@@ -405,14 +417,14 @@ function renderPractice() {
 function renderSummary() {
   const pack = currentPackage();
   const correctCount = state.answers.filter((answer) => answer.correct).length;
-  const percent = Math.round((correctCount / pack.tasks.length) * 100);
-  updateDots(pack.tasks.length, pack.tasks.length);
+  const percent = Math.round((correctCount / state.tasks.length) * 100);
+  updateDots(state.tasks.length, state.tasks.length);
 
   const message = percent >= 90
     ? "Super Runde!"
     : percent >= 70
       ? "Gut gemacht!"
-      : "Weiter ueben lohnt sich!";
+      : "Weiter üben lohnt sich!";
 
   setScreen(`
     ${stageHeader("Fertig!", "Hier siehst du, wie die Runde gelaufen ist.", false)}
@@ -420,9 +432,9 @@ function renderSummary() {
       <div class="result-panel">
         <p class="result-number">${percent}%</p>
         <h2>${message}</h2>
-        <p>${correctCount} von ${pack.tasks.length} Aufgaben waren richtig.</p>
+        <p>${correctCount} von ${state.tasks.length} Aufgaben waren richtig.</p>
         <div class="actions-row">
-          <button class="primary-action" type="button" data-action="retry-package">Nochmal ueben</button>
+          <button class="primary-action" type="button" data-action="retry-package">Nochmal üben</button>
           <button class="ghost-action" type="button" data-action="back-packages">Anderes Paket</button>
         </div>
       </div>
@@ -457,7 +469,7 @@ function stageHeader(title, lead, showBack) {
         <h1 class="section-title">${title}</h1>
         <p class="section-lead">${lead}</p>
       </div>
-      ${showBack ? `<button class="ghost-action" type="button" data-action="go-back">Zurueck</button>` : ""}
+      ${showBack ? `<button class="ghost-action" type="button" data-action="go-back">Zurück</button>` : ""}
     </section>
   `;
 }
@@ -472,8 +484,7 @@ function cardButton(title, hint, action, value, className) {
 }
 
 function answerQuestion(given) {
-  const pack = currentPackage();
-  const currentTask = pack.tasks[state.currentIndex];
+  const currentTask = state.tasks[state.currentIndex];
   const correct = normalizeAnswer(given) === normalizeAnswer(currentTask.answer);
   const feedback = app.querySelector(".feedback");
 
@@ -491,7 +502,7 @@ function answerQuestion(given) {
 
   window.setTimeout(() => {
     state.currentIndex += 1;
-    if (state.currentIndex >= pack.tasks.length) {
+    if (state.currentIndex >= state.tasks.length) {
       renderSummary();
     } else {
       renderPractice();
@@ -545,8 +556,7 @@ app.addEventListener("click", (event) => {
 
   if (action === "select-package") {
     state.packageId = value;
-    resetPractice();
-    renderPractice();
+    startPractice();
   }
 
   if (action === "answer-choice") {
@@ -558,8 +568,7 @@ app.addEventListener("click", (event) => {
   }
 
   if (action === "retry-package") {
-    resetPractice();
-    renderPractice();
+    startPractice();
   }
 
   if (action === "back-packages") {
