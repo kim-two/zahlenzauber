@@ -446,6 +446,71 @@ button {
   line-height: 1.12;
 }
 
+.clock-face {
+  position: relative;
+  width: min(100%, 300px);
+  aspect-ratio: 1;
+  margin: 0 auto 24px;
+  border: 7px solid var(--ink);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at center, var(--surface) 0 57%, transparent 58%),
+    repeating-conic-gradient(from 0deg, var(--ink) 0deg 1.5deg, transparent 1.5deg 30deg),
+    var(--yellow-soft);
+  box-shadow: 7px 7px 0 var(--ink);
+}
+
+.clock-number {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  color: var(--ink);
+  font-size: 1.25rem;
+  font-weight: 900;
+  transform:
+    translate(-50%, -50%)
+    rotate(var(--angle))
+    translateY(-116px)
+    rotate(calc(-1 * var(--angle)));
+}
+
+.clock-hand {
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+  border-radius: 999px;
+  background: var(--ink);
+  transform: translateX(-50%) rotate(var(--hand-angle));
+  transform-origin: 50% 100%;
+}
+
+.hour-hand {
+  width: 9px;
+  height: 30%;
+}
+
+.minute-hand {
+  width: 6px;
+  height: 40%;
+  background: var(--blue-dark);
+}
+
+.clock-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 22px;
+  height: 22px;
+  border: 4px solid var(--ink);
+  border-radius: 50%;
+  background: var(--yellow);
+  transform: translate(-50%, -50%);
+}
+
 .input-row {
   display: flex;
   flex-wrap: wrap;
@@ -697,6 +762,21 @@ button {
 
   .question-text {
     font-size: clamp(1.75rem, 11vw, 2.8rem);
+  }
+
+  .clock-face {
+    width: min(100%, 240px);
+  }
+
+  .clock-number {
+    width: 28px;
+    height: 28px;
+    font-size: 1rem;
+    transform:
+      translate(-50%, -50%)
+      rotate(var(--angle))
+      translateY(-91px)
+      rotate(calc(-1 * var(--angle)));
   }
 
   .input-row {

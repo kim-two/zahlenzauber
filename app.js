@@ -40,6 +40,7 @@ const packages = {
       mathPackage("mal-klein", "Mal", "Übe einfache Malaufgaben.", "input", 10, () => makeMultiplication(2, 10, 2, 5)),
       mathPackage("geteilt-klein", "Geteilt", "Teile Zahlen ohne Rest.", "choice", 10, () => makeDivision(2, 10, 2, 5)),
       mathPackage("textaufgaben-klasse-2", "Textaufgaben", "Lies genau und rechne.", "input", 10, makeStoryProblemGrade2),
+      mathPackage("uhr-ablesen", "Uhr ablesen", "Erkenne die Uhrzeit auf einer Uhr mit Zeigern.", "choice", 10, makeAnalogClockTask),
       mathPackage("uhrzeiten", "Uhrzeiten", "Lies einfache Zeiten.", "choice", 8, makeClockTask)
     ],
     deutsch: [
@@ -221,6 +222,29 @@ function makeClockTask() {
   return choice(question, answer, shuffle([...options]));
 }
 
+function makeAnalogClockTask() {
+  const hour = randomInt(1, 12);
+  const minutes = [0, 15, 30, 45][randomInt(0, 3)];
+  const answer = `${hour}:${String(minutes).padStart(2, "0")}`;
+  const options = new Set([answer]);
+
+  while (options.size < 4) {
+    const candidateHour = randomInt(1, 12);
+    const candidateMinutes = [0, 15, 30, 45][randomInt(0, 3)];
+    options.add(`${candidateHour}:${String(candidateMinutes).padStart(2, "0")}`);
+  }
+
+  return {
+    ...choice("Wie spät ist es auf der Uhr?", answer, shuffle([...options])),
+    clock: {
+      hour,
+      minutes,
+      hourDegrees: (hour % 12) * 30 + minutes * 0.5,
+      minuteDegrees: minutes * 6
+    }
+  };
+}
+
 function makeStoryProblemGrade2() {
   const templates = [
     () => {
@@ -380,6 +404,7 @@ function renderPractice() {
   const pack = currentPackage();
   const currentTask = state.tasks[state.currentIndex];
   updateDots(state.tasks.length, state.answers.length);
+  const clockVisual = currentTask.clock ? renderClock(currentTask.clock) : "";
 
   const answerArea = currentTask.options
     ? `<div class="answer-grid">
@@ -399,6 +424,7 @@ function renderPractice() {
     <section class="practice-layout">
       <div class="task-panel">
         <p class="question-count">Aufgabe ${state.currentIndex + 1} von ${state.tasks.length}</p>
+        ${clockVisual}
         <h2 class="question-text">${escapeHtml(currentTask.question)}</h2>
         ${answerArea}
         <div class="feedback" aria-live="polite"></div>
@@ -421,6 +447,21 @@ function renderPractice() {
 
   const input = app.querySelector(".answer-input");
   if (input) input.focus();
+}
+
+function renderClock(clock) {
+  return `
+    <div class="clock-face" aria-label="Uhr mit Zeigern">
+      ${Array.from({ length: 12 }, (_, index) => {
+        const number = index + 1;
+        const angle = number * 30;
+        return `<span class="clock-number" style="--angle: ${angle}deg">${number}</span>`;
+      }).join("")}
+      <span class="clock-hand hour-hand" style="--hand-angle: ${clock.hourDegrees}deg"></span>
+      <span class="clock-hand minute-hand" style="--hand-angle: ${clock.minuteDegrees}deg"></span>
+      <span class="clock-center"></span>
+    </div>
+  `;
 }
 
 function renderSummary() {
